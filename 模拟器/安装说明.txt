@@ -1,0 +1,38 @@
+
+Cisco packet tracer 5.3版+汉化包
+
+
+汉化步骤：
+
+1、将语言包“chinese.ptl”复制到文件安装目录下的“languages”目录下。
+
+2、打到PT5.3,选择“Options>>preferences”,在下面“Select Language”中选择“chinese.ptl”,点击“Change Language”.
+
+3、重启PT，汉化成功。
+
+
+
+扒皮龙
+
+QQ：12798815
+
+bapilong@163.com
+
+2010.5.20
+
+
+
+
+
+netsim9
+
+
+Install with netsim9.exe in Install Folder.
+
+copy Boson Folder to C:\
+
+Copy three files at Final Folder to Boson netsim9 installation directory. Ask overwrite, overwrite.
+
+Enjoy it.
+
+Don't forget say thanks.
