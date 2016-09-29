@@ -1,0 +1,31 @@
+﻿设备共同常用配置
+
+
+Press Enter to Start
+
+Router>en
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+
+Router(config)#Enable secret cisco
+Router(config)#Enable password cisco1
+
+Router(config)#No ip domain-lookup
+Router(config)#service password-encryption
+
+
+Router(config)#Line console 0
+Router(config-line)#Password cisco
+Router(config-line)#Login
+Router(config-line)#No exec-timeout
+Router(config-line)#logging synchronous
+
+
+Router(config-line)#line vty 0 4
+Router(config-line)#Password cisco
+Router(config-line)#Login
+Router(config-line)#No exec-timeout
+Router(config-line)#logging synchronous
+
+注:VTY (虚拟终端) 在网络操作系统（包括Cisco IOS）中
+接受telent 或ssh 连接的一个逻辑接口。
