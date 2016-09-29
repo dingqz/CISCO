@@ -1,0 +1,182 @@
+配置PC1
+
+C:>ipconfig /ip 11.1.1.4 255.255.255.0
+C:>ipconfig /dg 11.1.1.1
+C:>ipconfig /all
+
+  HELP
+     Manipulates ip information for Workstation.
+
+     IPCONFIG [/all | /dg | /dns | /ip | /release | /renew]
+     /all       Display full configuration information
+     /dg        Adds the default gateway to the workstation
+     /dns       Adds the dns server to the workstation
+     /ip        Adds the ip address and subnet mask to the workstation
+     /release   Release the IPv4 address to the workstation
+     /renew     Renew the IPv4 address to the workstation
+
+  Examples:
+     ¢   ipconfig /ip 157.1.1.12 255.0.0.0
+     ¢   ipconfig /dg 157.1.1.1
+
+  Boson BOSS 5.0 IP Configuration
+     Ethernet adapter Local Area Connection:
+        Connection-specific DNS Suffix  . : 
+        IP Address. . . . . . . . . . . . : 11.1.1.4
+        Subnet Mask . . . . . . . . . . . : 255.255.255.0
+        Default Gateway . . . . . . . . . : 11.1.1.1
+    Ethernet adapter Local Area Connection:
+    Connection-specific DNS Suffix  . : 
+    Description . . . . . . . . . . . : Realtek RTL8139/810X Family PCI FastEthernet NIC
+    Physical Address. . . . . . . . . : 000C.6887.4182
+    DHCP Enabled. . . . . . . . . . . : No 
+
+    DNS Servers . . . . . . . . . . . : 
+
+
+
+配置PC2
+C:>ipconfig /ip 22.1.1.4 255.255.255.0
+C:>ipconfig /dg 22.1.1.2
+
+
+
+配置PC3
+C:>ipconfig /ip 33.1.1.4 255.255.255.0
+C:>ipconfig /dg 33.1.1.3
+
+
+
+配置R1
+Router>en
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+
+Router(config)#hostname R1
+
+R1(config)#int ethernet 0
+R1(config-if)#ip add 11.1.1.1 255.255.255.0
+R1(config-if)#no shutdown
+%LINK-3-UPDOWN: Interface Ethernet0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Ethernet0, changed state to up
+R1(config-if)#exit
+
+R1(config)#int s0/0
+R1(config-if)#ip add 12.1.1.1 255.255.255.0
+R1(config-if)#clock rate 9600
+R1(config-if)#no shutdown
+%LINK-3-UPDOWN: Interface Serial0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Serial0/0, changed state to up
+%LINK-3-UPDOWN: Interface Serial0/0, changed state to down
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Serial0/0, changed state to down
+R1(config-if)#exit
+
+R1(config)#int s0/1
+R1(config-if)#ip add 13.1.1.1 255.255.255.0
+R1(config-if)#clock rate 9600
+R1(config-if)#no shutdown
+%LINK-3-UPDOWN: Interface Serial0/1, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Serial0/1, changed state to up
+%LINK-3-UPDOWN: Interface Serial0/1, changed state to down
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Serial0/1, changed state to down
+R1(config-if)#end
+R1#
+
+
+
+配置R2
+Router>
+Router>en 
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+
+Router(config)#hostname R2
+
+R2(config)#int e0
+R2(config-if)#ip add 22.1.1.2 255.255.255.0
+R2(config-if)#no shutdown
+%LINK-3-UPDOWN: Interface Ethernet0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Ethernet0, changed state to up
+R2(config-if)#exit
+
+R2(config)#int s0/0
+R2(config-if)#ip add 12.1.1.2 255.255.255.0
+R2(config-if)#no shutdown
+%LINK-3-UPDOWN: Interface Serial0/0, changed state to up
+R2(config-if)#exit
+
+R2(config)#int s0/1
+R2(config-if)#ip add 23.1.1.2 255.255.255.0
+R2(config-if)#clock rate 9600
+R2(config-if)#no shutdown
+%LINK-3-UPDOWN: Interface Serial0/1, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Serial0/1, changed state to up
+%LINK-3-UPDOWN: Interface Serial0/1, changed state to down
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Serial0/1, changed state to down
+R2(config-if)#end
+
+
+
+
+
+
+
+配置R3
+Router>en
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#hostname R3
+
+R3(config)#int e0
+R3(config-if)#ip add 33.1.1.3 255.255.255.0
+R3(config-if)#no shutdown
+%LINK-3-UPDOWN: Interface Ethernet0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Ethernet0, changed state to up
+R3(config-if)#exit
+
+R3(config)#int s0/0
+R3(config-if)#ip add 13.1.1.3 255.255.255.0
+R3(config-if)#no shutdown
+%LINK-3-UPDOWN: Interface Serial0/0, changed state to up
+R3(config-if)#exit
+
+R3(config)#int s0/1
+R3(config-if)#ip add 23.1.1.3 255.255.255.0
+R3(config-if)#no shutdown
+%LINK-3-UPDOWN: Interface Serial0/1, changed state to up
+R3(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Serial0/1, changed state to up
+%LINK-3-UPDOWN: Interface Serial0/1, changed state to down
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Serial0/1, changed state to down
+R3(config-if)#end
+
+
+
+配置SW1
+Switch>enable
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#host SW1
+SW1(config)#interface vlan 1
+SW1(config-if)#ip address 11.1.1.2 255.255.255.0
+SW1(config-if)#no shutdown
+SW1(config-if)#exit
+SW1(config)#ip default-gateway 11.1.1.1
+SW1(config)#end
+
+
+配置SW2
+Switch>en
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#host SW2
+SW2(config)#interface vlan 1
+SW2(config-if)#ip address 11.1.1.3 255.255.255.0
+SW2(config-if)#no shutdown
+SW2(config-if)#exit
+SW2(config)#ip default-gateway 11.1.1.1
+SW2(config)#end
+SW2#
+
+
+
