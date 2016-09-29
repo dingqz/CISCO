@@ -1,0 +1,12 @@
+conf t
+host PC1
+no ip routing  关闭路由器的路由功能
+interface ethernet 0
+ip address 11.1.1.4 255.255.255.0
+no shutdown
+exit
+ip default-gateway 11.1.1.1
+end
+
+show ip int brief
+show ip route
