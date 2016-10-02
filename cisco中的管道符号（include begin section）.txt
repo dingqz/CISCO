@@ -1,0 +1,98 @@
+
+cisco中的管道符号（include begin section）
+ 
+首先说一下路由器命令输出过滤的语法：任意show命令+管道符|+过滤器
+这里的过滤器包括以下三种：
+include和exclude:显示包含或者不包含特定正则表达式的行
+begin：从符合特定正则表达式的行开始显示
+section：仅显示特定符合正则表达式的section（所谓的section就是从一个非空格打头的行开始，直到下一个非空格打头的行之前结束，常用的是路由协议配置命令部分）
+对于more命令的输出仅支持include,exclude和begin，其他的命令都不支持命令输出的过滤，这点和UNIX的针对任意命令都可以使用管道符是不同的，同时也不能像UNIX那样可以对过滤进行级联。
+下面先以一个简单的例子来介绍一下输出的过滤。
+show interface命令可以给我们很多信息的输出，比如：
+R1#show interfaces
+FastEthernet0/0 is up, line protocol is up
+  Hardware is DEC21140, address is ca00.0f08.0000 (bia ca00.0f08.0000)
+  Internet address is 137.1.1.1/27
+  MTU 1500 bytes, BW 100000 Kbit, DLY 100 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set
+  Keepalive set (10 sec)
+  Half-duplex, 100Mb/s, 100BaseTX/FX
+  ARP type: ARPA, ARP Timeout 04:00:00
+  Last input never, output 00:00:09, output hang never
+  Last clearing of "show interface" counters never
+  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0
+  Queueing strategy: fifo
+  Output queue :0/40 (size/max)
+  5 minute input rate 0 bits/sec, 0 packets/sec
+  5 minute output rate 0 bits/sec, 0 packets/sec
+.....
+其实我们可能仅仅关注某部分的信息，比如通常会关心所有的端口是不是工作在全双工的模式下，也就是Half-duplex, 100Mb/s, 100BaseTX/FX这部分的内容，那么我们加个过滤条件看一下：
+R1#show interfaces | include duplex
+  Half-duplex, 100Mb/s, 100BaseTX/FX
+  Half-duplex, 100Mb/s, 100BaseTX/FX
+这样简洁多了吧，可是不够完美，发现了半双工，但是不知道是哪个端口怎么办，我们在扩展下这个输出过滤：
+R1#show interfaces | include duplex|Ethernet
+FastEthernet0/0 is up, line protocol is up
+  Half-duplex, 100Mb/s, 100BaseTX/FX
+FastEthernet3/0 is administratively down, line protocol is down
+  Half-duplex, 100Mb/s, 100BaseTX/FX
+恩，这下比较完美了。这里出现了两个管道符|，后面这个|不是对前面结果的再过滤，而是正则里面or的功能。
+每次输入这么多是不是不爽，那就定义一个别名来简化吧：
+R1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+R1(config)#alias exec duplex show interfaces | include duplex
+R1(config)#end
+R1#duplex
+  Half-duplex, 100Mb/s, 100BaseTX/FX
+  Half-duplex, 100Mb/s, 100BaseTX/FX
+ 
+然后再看一个section的例子，有时我们会只关注路由器上关于路由协议的配置，一般都会用下面的命令show run | begin router
+这样显示的不但包含路由配置还会有以后更多的配置，这时候就可以使用section过滤(注意不是所有的IOS版本都支持section)
+router1#show run | section router
+hostname router1
+router ospf 100
+log-adjacency-changes
+network 0.0.0.0 255.255.255.255 area 0
+唉，还是不够完美，把配置路由器名字的命令也显示出来了，只好再修改一下了：
+router1#sh run | section ^router
+router ospf 100
+log-adjacency-changes
+network 0.0.0.0 255.255.255.255 area 0
+这下就比较完美了。^router 就是代表以router打头的行了，这样就把hostname router1给排出再外了。
+ 
+最后再来一个比较复杂点的输出过滤。在OSPF中show ip ospf neighbor不能够显示出邻居的area，只能通过show ip ospf neighbor detail命令，
+Neoshi#show ip ospf neighbor detail
+Neighbor 172.16.0.21, interface address 172.16.1.2
+    In the area 0 via interface Serial0/0/0.100
+    Neighbor priority is 0, State is FULL, 6 state changes
+    DR is 0.0.0.0 BDR is 0.0.0.0
+    Options is 0x52
+    LLS Options is 0x1 (LR)
+    Dead timer due in 00:00:37
+    Neighbor is up for 00:39:02
+    Index 1/1, retransmission queue length 0, number of retransmission 1
+    First 0x0(0)/0x0(0) Next 0x0(0)/0x0(0)
+    Last retransmission scan length is 1, maximum is 1
+    Last retransmission scan time is 0 msec, maximum is 0 msec
+输出信息很多，而实际上最有用的就是前三行的输出。
+Neoshi#show ip ospf neighbor detail | include (Neighbor.*(interface|priority))|area
+Neighbor 172.16.0.21, interface address 172.16.1.2
+    In the area 0 via interface Serial0/0/0.100
+    Neighbor priority is 0, State is FULL, 6 state changes
+Neighbor 172.16.0.12, interface address 10.0.0.6
+    In the area 0 via interface FastEthernet0/0
+    Neighbor priority is 1, State is FULL, 6 state changes
+这个正则稍微复杂点，不过输出还是达到了预定目标。
+ 
+上面只是对命令输出过滤的一些总结，除了过滤器的选择外最重要的就是正则表达式的编写了，关于正则有专门的书我就不多说了。
+其实更进一步还可以对输出进行重新的排版，从而使输出变的更简洁，更有效，不过这就要用到TCL脚本。
+下面是一个学别人配置的别名为ipconfig的脚本输出示例，有兴趣的大家可以研究一下。
+R1#ifconfig
+Interface         IP Address      Mask            MTU  State
+=================================================================
+FastEthernet0/0   172.18.25.1     255.255.255.0   1500 up
+FastEthernet0/1   no address                           admin down
+Serial0/0/0       no address                           up
+Serial0/0/0.101   192.168.201.2   255.255.255.252 1500 up
+Serial0/1/0       no address                           up/down
