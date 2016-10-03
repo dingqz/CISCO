@@ -1,0 +1,142 @@
+Cisco设备及华为交换机SSH远程登录配置 (2014-08-29 09:22:43)
+标签： it	分类： 网络
+1、配置SSH
+
+
+R1#conf t
+R1(config)#int s1/0
+R1(config-if)#ip add 10.1.12.1 255.255.255.0
+R1(config-if)#no shut
+R1(config-if)#exi
+R1(config)#ip domain-name cisco.com      ----------为路由器配置一个域名，也可以认为该路由器属于这个域。
+R1(config)#crypto key generate rsa       ----------生成一个为rsa算法的密钥
+The name for the keys will be: R1.cisco.com
+Choose the size of the key modulus in the range of 360 to 2048 for your
+  General Purpose Keys. Choosing a key modulus greater than 512 may take
+  a few minutes.
+How many bits in the modulus [512]: 1024 ----------设置密钥为1024位
+% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
+*Mar  1 00:59:17.179: %SSH-5-ENABLED: SSH 1.99 has been enabled
+
+PS：在Cisoc中rsa支持360-2048位密钥，该算法的原理是：主机将自己的公用密钥分发给相关的客户机，客户机在访问主机时则使用该主机的公开密钥来加密数据，主机则使用自己的私有的密钥来解密数据，从而实现主机密钥认证，确定客户机的可靠身份。
+
+R1(config)#line vty 0 15
+R1(config-line)#login local              ----------设置使用本地数据库,即使用创建的用户名和密码。
+R1(config-line)#transport input none     ----------关闭VTY其他的远程登录协议
+R1(config-line)#transport input ssh      ----------配置只允许SSH登录，即其他远程登录方式不可使用，如telnet。
+R1(config-line)#exi
+R1(config)#username admin password admin ----------创建用户以及密码
+R1(config)#enable secret cisco           ----------设置特权密码
+R1(config)#ip ssh version 2              ----------设置SSH版本号
+R1(config)#end
+2、登录测试
+
+
+R2#telnet 10.1.12.1
+Trying 10.1.12.1 ... 
+% Connection refused by remote host
+R2#
+R2#ssh -l admin 10.1.12.1
+Password: 此处密码为admin用户的密码admin
+R1>en
+Password: 此处密码为特权密码cisco
+R1#
+
+
+
+配置手册中具体有
+
+http://www.cisco.com/en/US/products/ps6406/products_configuration_guide_chapter09186a008055fd0f.html#wp1204672
+
+
+Setting Up the Switch to Run SSH 
+Follow these steps to set up your switch to run SSH: 
+1. Download the cryptographic software image from Cisco.com. This step is required. For more information, see the release notes for this release. 
+2. Configure a hostname and IP domain name for the switch. Follow this procedure only if you are configuring the switch as an SSH server. 
+3. Generate an RSA key pair for the switch, which automatically enables SSH. Follow this procedure only if you are configuring the switch as an SSH server. 
+4. Configure user authentication for local or remote access. This step is required. For more information, see the "Configuring the Switch for Local Authentication and Authorization" section. 
+Beginning in privileged EXEC mode, follow these steps to configure a hostname and an IP domain name and to generate an RSA key pair. This procedure is required if you are configuring the switch as an SSH server. 
+
+Command Purpose 
+Step 1 
+configure terminal 
+Enter global configuration mode. 
+Step 2 
+hostname hostname 
+Configure a hostname for your switch. 
+Step 3 
+ip domain-name domain_name 
+Configure a host domain for your switch. 
+Step 4 
+crypto key generate rsa 
+Enable the SSH server for local and remote authentication on the switch and generate an RSA key pair. 
+We recommend that a minimum modulus size of 1024 bits. 
+When you generate RSA keys, you are prompted to enter a modulus length. A longer modulus length might be more secure, but it takes longer to generate and to use. 
+Step 5 
+end 
+Return to privileged EXEC mode. 
+Step 6 
+show ip ssh 
+or 
+show ssh 
+Show the version and configuration information for your SSH server. 
+Show the status of the SSH server on the switch. 
+Step 7 
+copy running-config startup-config 
+(Optional) Save your entries in the configuration file. 
+简单点就是
+
+
+switch(config )#aaa-newmodel
+switch(config )#ip domain-name cisco.com
+switch(config )#crypto key generate rsa
+switch(config )#line vty 0 15
+switch(config )#transport input ssh
+CCNP自学指南 组建CISCO多层交换网络 (BCMSN) (第二版)
+第80页
+此外,CISCO网站和交换机自带的配置手册里面也有
+
+
+
+
+华为的交换机
+
+
+步骤一、生成本地密钥对
+[Huawei]rsa local-key-pair create
+The key name will be:Huawei_Host
+The range of public key size is(512~2048).NOTES:If the key modulus is greater than 512,it will take a few minutes.Input the bits in the modulus[default=512]:1024
+Generating keys...............................++++++...++++++..++++++++......++++++++
+步骤二、配置VTY用户界面
+[Huawei]user-interface vty 0 4
+[Huawei-ui-vty0-4]authentication-mode aaa
+[Huawei-ui-vty0-4]protocol inbound ssh
+[Huawei-ui-vty0-4]quit
+步骤三、创建SSH用户，并配置用户的认证方式为password
+[Huawei]ssh user shxke authentication-type password
+步骤四、配置SSH用户的用户名和密码
+[Huawei]aaa
+[Huawei-aaa]local-user shxke password cipher shxke
+Info:Add a new user.
+[Huawei-aaa]local-user shxke privilege level 3
+[Huawei-aaa]local-user shxke service-type ssh
+[Huawei-aaa]quit
+步骤五、使能STelent功能，并配置用户的服务类型为STelnet
+[Huawei]stelnet server enable
+Info:Succeeded in starting the Stelnet server.
+[Huawei]ssh user shxke service-type stelnet
+
+Mar 28 2014 08:18:27 Quidway %SOCKET/4/SOCK_SOCKDETAILLOG(l): Detailed information on the current socket:  Task: VTYD(32), Socket number: 171(TCP), Protocol number: 6.
+Mar 28 2014 08:18:27 Quidway %SOCKET/4/SOCK_CLOSESOCK(l): Current socket was closed, Proto: TCP, Cause: Application closed socket.
+Mar 28 2014 08:18:27 Quidway %SSH/4/USER_NOTEXIST(l): The user root does not exist.
+Mar 28 2014 08:18:23 Quidway %SOCKET/4/SOCK_TCPDETAILLOG(l): Detailed information on the current tcp socket: State: Established, local-ip: 192.168.1.1, local-port: 22, remote-ip: 113.31.83.63, remote-port: 50461.
+Mar 28 2014 08:18:23 Quidway %SOCKET/4/SOCK_SOCKDETAILLOG(l): Detailed information on the current socket:  Task: VTYD(32), Socket number: 170(TCP), Protocol number: 6.
+Mar 28 2014 08:18:23 Quidway %SOCKET/4/SOCK_CLOSESOCK(l): Current socket was closed, Proto: TCP, Cause: Application closed socket.
+Mar 28 2014 08:18:23 Quidway %SSH/4/USER_NOTEXIST(l): The user root does not exist.
+Mar 28 2014 08:18:20 Quidway %SOCKET/4/SOCK_TCPDETAILLOG(l): Detailed information on the current tcp socket: State: Established, local-ip: 192.168.1.1, local-port: 22, remote-ip: 113.31.83.63, remote-port: 46283.
+这个好像有人在试图通过网络使用SSH协议进行登录，对于这种，可以用下边的命令来做限制
+
+acl num 2000
+rule permit source 192.168.1.0 0.0.0.255   //允许通过ssh登陆的网段
+user-interface vty 0 4
+acl 2000 inbound
