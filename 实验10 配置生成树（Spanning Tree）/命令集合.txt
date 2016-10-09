@@ -1,0 +1,65 @@
+
+
+SW1>
+SW1>en
+SW1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+
+SW1(config)#int range fa 0/23-24
+SW1(config-if-range)#
+SW1(config-if-range)#switch mode trunk
+SW1(config-if-range)#no shutdown
+SW1(config-if-range)#end
+
+SW1#sho spanning-tree 
+VLAN0001
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1289.3959
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Desg FWD 0         128.23   P2p
+Fa0/24              Desg FWD 0         128.24   P2p
+
+
+
+
+SW2>en
+SW2#
+SW2#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+
+SW2(config)#int range fa 0/23-24
+SW2(config-if-range)#switch mode trunk
+SW2(config-if-range)#no shutdown
+
+SW2(config-if-range)#end
+
+SW2#show spanning-tree 
+VLAN0001
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             Cost        19
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1380.3538
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Root FWD 19        128.23   P2p
+Fa0/24              Desg BLK 19        128.24   P2p
+
+
+
