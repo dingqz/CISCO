@@ -1,0 +1,287 @@
+
+SW1>en
+SW1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+
+SW1(config)#vlan 2
+VLAN 2 added:
+    Name:VLAN0002
+SW1(config-vlan)#vlan 3
+VLAN 3 added:
+    Name:VLAN0003
+SW1(config-vlan)#vlan 4
+VLAN 4 added:
+    Name:VLAN0004
+SW1(config-vlan)#end
+SW1#
+SW1#
+SW1#show vlan
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/1, Fa0/2, Fa0/3, Fa0/4
+                                                Fa0/5, Fa0/6, Fa0/7, Fa0/8
+                                                Fa0/9, Fa0/10, Fa0/11, Fa0/12
+                                                Fa0/13, Fa0/14, Fa0/15, Fa0/16
+                                                Fa0/17, Fa0/18, Fa0/19, Fa0/20
+                                                Fa0/21, Fa0/22, Gi0/1, Gi0/2
+2    VLAN0002                         active    
+3    VLAN0003                         active    
+4    VLAN0004                         active    
+
+1002 fddi-default                     active
+1003 token-ring-default               active
+1004 fddinet-default                  active
+1005 trnet-default                    active
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+1    enet  100001     1500  -      -      -        -    -        0      0
+2    enet  100002     1500  -      -      -        -    -        0      0
+3    enet  100003     1500  -      -      -        -    -        0      0
+
+SW1#sho spanning-tree vlan 1
+VLAN0001
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1289.3959
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Desg FWD 0         128.23   P2p
+Fa0/24              Desg FWD 0         128.24   P2p
+
+
+
+SW1#sho spanning-tree vlan 2
+VLAN0002
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1289.3959
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Desg FWD 0         128.23   P2p
+Fa0/24              Desg FWD 0         128.24   P2p
+
+
+
+SW1#sho spanning-tree vlan 3
+VLAN0003
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1289.3959
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Desg FWD 0         128.23   P2p
+Fa0/24              Desg FWD 0         128.24   P2p
+
+
+
+SW1#sho spanning-tree vlan 4
+VLAN0004
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1289.3959
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Desg FWD 0         128.23   P2p
+Fa0/24              Desg FWD 0         128.24   P2p
+
+
+
+
+
+
+
+
+SW2>en
+SW2#show vlan
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/1, Fa0/2, Fa0/3, Fa0/4
+                                                Fa0/5, Fa0/6, Fa0/7, Fa0/8
+                                                Fa0/9, Fa0/10, Fa0/11, Fa0/12
+                                                Fa0/13, Fa0/14, Fa0/15, Fa0/16
+                                                Fa0/17, Fa0/18, Fa0/19, Fa0/20
+                                                Fa0/21, Fa0/22, Gi0/1, Gi0/2
+2    VLAN0002                         active    
+3    VLAN0003                         active    
+4    VLAN0004                         active    
+
+1002 fddi-default                     active
+1003 token-ring-default               active
+1004 fddinet-default                  active
+1005 trnet-default                    active
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+1    enet  100001     1500  -      -      -        -    -        0      0
+2    enet  100002     1500  -      -      -        -    -        0      0
+3    enet  100003     1500  -      -      -        -    -        0      0
+4    enet  100004     1500  -      -      -        -    -        0      0
+1002 fddi  101002     1500  -      -      -        -    -        0      0
+1003 tr    101003     1500  -      -      -        -    -        0      0
+1004 fdnet 101004     1500  -      -      -        ieee -        0      0
+1005 trnet 101005     1500  -      -      -        ibm  -        0      0
+
+
+SW2#
+SW2#show spanning-tree vlan 1
+VLAN0001
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             Cost        19
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1380.3538
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Root FWD 19        128.23   P2p
+Fa0/24              Desg BLK 19        128.24   P2p
+
+
+
+SW2#show spanning-tree vlan 2
+VLAN0002
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             Cost        19
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1380.3538
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Root FWD 19        128.23   P2p
+Fa0/24              Desg BLK 19        128.24   P2p
+
+
+
+SW2#show spanning-tree vlan 3
+VLAN0003
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             Cost        19
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1380.3538
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Root FWD 19        128.23   P2p
+Fa0/24              Desg BLK 19        128.24   P2p
+
+
+
+SW2#show spanning-tree vlan 4
+VLAN0004
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             Cost        19
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1380.3538
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Root FWD 19        128.23   P2p
+Fa0/24              Desg BLK 19        128.24   P2p
+
+
+
+SW2#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+SW2(config)#int fa 0/24
+SW2(config-if)#spanning-tree vlan 3-4 cost 18
+SW2(config-if)#end
+SW2#
+SW2#
+SW2#
+SW2#show spanning-tree vlan 3
+VLAN0003
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             Cost        18
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1380.3538
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Desg BLK 19        128.23   P2p
+Fa0/24              Root FWD 18        128.24   P2p
+
+
+
+SW2#show spanning-tree vlan 4
+VLAN0004
+  Spanning tree enabled protocol pvst
+  Root ID    Priority    32768
+             Address     000C.1289.3959
+             Cost        18
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32768
+             Address     000C.1380.3538
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time 15
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/23              Desg BLK 19        128.23   P2p
+Fa0/24              Root FWD 18        128.24   P2p
+
+
